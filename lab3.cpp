@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,36 +6,36 @@
 
 
 struct node {
-	char         inf[256];   /* полезная информация */
-	int          priority;   /* чем больше — тем важнее */
-	struct node *next;
+	char         inf[256];   
+	int          priority;   
+	struct node* next;
 };
 
-struct node *head = NULL;    /* голова = максимальный приоритет */
-struct node *last = NULL;    /* хвост (для обновления при вставке в конец) */
+struct node* head = NULL;    /* РіРѕР»РѕРІР° = РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РїСЂРёРѕСЂРёС‚РµС‚ */
+struct node* last = NULL;    /* С…РІРѕСЃС‚ (РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РїСЂРё РІСЃС‚Р°РІРєРµ РІ РєРѕРЅРµС†) */
 
-/* ---------- Создание элемента ---------- */
-struct node *get_struct(void)
+/* ---------- РЎРѕР·РґР°РЅРёРµ СЌР»РµРјРµРЅС‚Р° ---------- */
+struct node* get_struct(void)
 {
-	struct node *p = NULL;
+	struct node* p = NULL;
 	char s[256];
 	int  pr;
 
 	if ((p = (struct node*)malloc(sizeof(struct node))) == NULL) {
-		printf("Ошибка при распределении памяти\n");
+		printf("РћС€РёР±РєР° РїСЂРё СЂР°СЃРїСЂРµРґРµР»РµРЅРёРё РїР°РјСЏС‚Рё\n");
 		exit(1);
 	}
 
-	printf("Введите название объекта: \n");
+	printf("Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РѕР±СЉРµРєС‚Р°: \n");
 	scanf("%255s", s);
 	if (*s == 0) {
-		printf("Запись не была произведена\n");
+		printf("Р—Р°РїРёСЃСЊ РЅРµ Р±С‹Р»Р° РїСЂРѕРёР·РІРµРґРµРЅР°\n");
 		free(p);
 		return NULL;
 	}
 	strcpy(p->inf, s);
 
-	printf("Введите приоритет (целое, больше = важнее): \n");
+	printf("Р’РІРµРґРёС‚Рµ РїСЂРёРѕСЂРёС‚РµС‚ (С†РµР»РѕРµ, Р±РѕР»СЊС€Рµ = РІР°Р¶РЅРµРµ): \n");
 	scanf("%d", &pr);
 	p->priority = pr;
 
@@ -43,13 +43,13 @@ struct node *get_struct(void)
 	return p;
 }
 
-/* ---------- Вставка с учётом приоритета ---------- */
+/* ---------- Р’СЃС‚Р°РІРєР° СЃ СѓС‡С‘С‚РѕРј РїСЂРёРѕСЂРёС‚РµС‚Р° ---------- */
 void spstore(void)
 {
-	struct node *p = get_struct();
+	struct node* p = get_struct();
 	if (p == NULL) return;
 
-	/* Пустой список или новый приоритет выше головы */
+	/* РџСѓСЃС‚РѕР№ СЃРїРёСЃРѕРє РёР»Рё РЅРѕРІС‹Р№ РїСЂРёРѕСЂРёС‚РµС‚ РІС‹С€Рµ РіРѕР»РѕРІС‹ */
 	if (head == NULL || p->priority > head->priority) {
 		p->next = head;
 		head = p;
@@ -57,8 +57,8 @@ void spstore(void)
 		return;
 	}
 
-	/* Ищем первый узел с приоритетом < нового */
-	struct node *cur = head;
+	/* РС‰РµРј РїРµСЂРІС‹Р№ СѓР·РµР» СЃ РїСЂРёРѕСЂРёС‚РµС‚РѕРј < РЅРѕРІРѕРіРѕ */
+	struct node* cur = head;
 	while (cur->next != NULL && cur->next->priority >= p->priority)
 		cur = cur->next;
 
@@ -68,14 +68,14 @@ void spstore(void)
 	if (p->next == NULL) last = p;
 }
 
-/* ---------- Извлечение максимума ---------- */
-int extract(char *out_name, int *out_prio)
+/* ---------- РР·РІР»РµС‡РµРЅРёРµ РјР°РєСЃРёРјСѓРјР° ---------- */
+int extract(char* out_name, int* out_prio)
 {
 	if (head == NULL) {
-		printf("Очередь пуста\n");
+		printf("РћС‡РµСЂРµРґСЊ РїСѓСЃС‚Р°\n");
 		return 0;
 	}
-	struct node *tmp = head;
+	struct node* tmp = head;
 	if (out_name) strcpy(out_name, tmp->inf);
 	if (out_prio) *out_prio = tmp->priority;
 
@@ -85,46 +85,46 @@ int extract(char *out_name, int *out_prio)
 	return 1;
 }
 
-/* ---------- Просмотр ---------- */
+/* ---------- РџСЂРѕСЃРјРѕС‚СЂ ---------- */
 void review(void)
 {
-	struct node *struc = head;
+	struct node* struc = head;
 	if (head == NULL) {
-		printf("Очередь пуста\n");
+		printf("РћС‡РµСЂРµРґСЊ РїСѓСЃС‚Р°\n");
 		return;
 	}
-	printf("Содержимое очереди (голова = максимальный приоритет):\n");
+	printf("РЎРѕРґРµСЂР¶РёРјРѕРµ РѕС‡РµСЂРµРґРё (РіРѕР»РѕРІР° = РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РїСЂРёРѕСЂРёС‚РµС‚):\n");
 	while (struc) {
-		printf("Имя - %s, приоритет - %d\n", struc->inf, struc->priority);
+		printf("РРјСЏ - %s, РїСЂРёРѕСЂРёС‚РµС‚ - %d\n", struc->inf, struc->priority);
 		struc = struc->next;
 	}
 }
 
-/* ---------- Поиск по имени ---------- */
-struct node *find(char *name)
+/* ---------- РџРѕРёСЃРє РїРѕ РёРјРµРЅРё ---------- */
+struct node* find(char* name)
 {
-	struct node *struc = head;
+	struct node* struc = head;
 	if (head == NULL) {
-		printf("Очередь пуста\n");
+		printf("РћС‡РµСЂРµРґСЊ РїСѓСЃС‚Р°\n");
 		return NULL;
 	}
 	while (struc) {
 		if (strcmp(name, struc->inf) == 0) return struc;
 		struc = struc->next;
 	}
-	printf("Элемент не найден\n");
+	printf("Р­Р»РµРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ\n");
 	return NULL;
 }
 
-/* ---------- Удаление по имени ---------- */
-void del(char *name)
+/* ---------- РЈРґР°Р»РµРЅРёРµ РїРѕ РёРјРµРЅРё ---------- */
+void del(char* name)
 {
-	struct node *struc = head;
-	struct node *prev = NULL;
+	struct node* struc = head;
+	struct node* prev = NULL;
 	int flag = 0;
 
 	if (head == NULL) {
-		printf("Очередь пуста\n");
+		printf("РћС‡РµСЂРµРґСЊ РїСѓСЃС‚Р°\n");
 		return;
 	}
 
@@ -144,15 +144,87 @@ void del(char *name)
 		struc = struc->next;
 	}
 
-	if (flag == 0) printf("Элемент не найден\n");
+	if (flag == 0) printf("Р­Р»РµРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ\n");
 }
+/*----------- РР·РјРµРЅРµРЅРёРµ РїСЂРёРѕСЂРёС‚РµС‚Р° РїРѕ РёРјРµРЅРё -----------*/
 
-/* ---------- Освобождение ---------- */
+int change_priority(char* name, int new_prio)
+{
+	
+	struct node* matched = NULL;  
+	struct node* matched_tail = NULL;
+	struct node* prev = NULL;
+	struct node* cur = head;
+
+	while (cur != NULL) {
+		if (strcmp(name, cur->inf) == 0) {
+			struct node* next = cur->next;
+			if (prev == NULL)
+				head = next;            
+			else
+				prev->next = next;      
+
+			if (cur == last)
+				last = prev;
+
+			cur->next = NULL;
+			if (matched == NULL)
+				matched = matched_tail = cur;
+			else {
+				matched_tail->next = cur;
+				matched_tail = cur;
+			}
+
+			cur = next;
+		}
+		else {
+			
+			prev = cur;
+			cur = cur->next;
+		}
+	}
+
+	if (matched == NULL) {
+		printf("Р­Р»РµРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ\n");
+		return 0;
+	}
+
+	int count = 0;
+	cur = matched;
+	while (cur != NULL) {
+		struct node* next = cur->next;   
+
+		cur->priority = new_prio;
+		cur->next = NULL;
+
+		if (head == NULL || cur->priority > head->priority) {
+			cur->next = head;
+			head = cur;
+			if (last == NULL) last = cur;
+		}
+		else {
+			struct node* p = head;
+			while (p->next != NULL && p->next->priority >= cur->priority)
+				p = p->next;
+
+			cur->next = p->next;
+			p->next = cur;
+
+			if (cur->next == NULL) last = cur;
+		}
+
+		count++;
+		cur = next;
+	}
+
+	return count;
+}
+/* ---------- РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ ---------- */
 void free_all(void)
 {
-	struct node *n = head;
+	struct node* n = head;
 	while (n) {
-		struct node *nx = n->next;
+		struct node* nx = n->next;
 		free(n);
 		n = nx;
 	}
@@ -162,45 +234,58 @@ void free_all(void)
 /* ---------- main ---------- */
 int main(void)
 {
-	setlocale(LC_ALL,"rus");
+	SetConsoleOutputCP(65001); 
+	SetConsoleCP(65001);       
+	setlocale(LC_ALL, "ru-RU.UTF-8"); 
+	
 	int  choice;
 	char name[256];
 
 	for (;;) {
-		printf("\n=== ПРИОРИТЕТНАЯ ОЧЕРЕДЬ ===\n"
-			"1 - добавить\n"
-			"2 - извлечь максимум\n"
-			"3 - просмотр\n"
-			"4 - найти\n"
-			"5 - удалить по имени\n"
-			"0 - выход\n> ");
+		printf("\n=== РџР РРћР РРўР•РўРќРђРЇ РћР§Р•Р Р•Р”Р¬ ===\n"
+			"1 - РґРѕР±Р°РІРёС‚СЊ\n"
+			"2 - РёР·РІР»РµС‡СЊ РјР°РєСЃРёРјСѓРј\n"
+			"3 - РїСЂРѕСЃРјРѕС‚СЂ\n"
+			"4 - РЅР°Р№С‚Рё\n"
+			"5 - СѓРґР°Р»РёС‚СЊ РїРѕ РёРјРµРЅРё\n"
+			"6 - РёР·РјРµРЅРµРЅРёРµ РїСЂРёРѕСЂРёС‚РµС‚Р° РїРѕ РёРјРµРЅРё\n"
+			"0 - РІС‹С…РѕРґ\n> ");
 		if (scanf("%d", &choice) != 1) break;
 
 		switch (choice) {
 		case 1: spstore(); break;
 		case 2: {
-					int pr;
-					if (extract(name, &pr))
-						printf("Извлечён: %s (приоритет %d)\n", name, pr);
-					break;
+			int pr;
+			if (extract(name, &pr))
+				printf("РР·РІР»РµС‡С‘РЅ: %s (РїСЂРёРѕСЂРёС‚РµС‚ %d)\n", name, pr);
+			break;
 		}
 		case 3: review(); break;
 		case 4: {
-					printf("Имя для поиска: ");
-					scanf("%255s", name);
-					struct node *f = find(name);
-					if (f) printf("Найден: %s, приоритет %d\n", f->inf, f->priority);
-					break;
+			printf("РРјСЏ РґР»СЏ РїРѕРёСЃРєР°: ");
+			scanf("%255s", name);
+			struct node* f = find(name);
+			if (f) printf("РќР°Р№РґРµРЅ: %s, РїСЂРёРѕСЂРёС‚РµС‚ %d\n", f->inf, f->priority);
+			break;
 		}
 		case 5:
-			printf("Имя для удаления: ");
+			printf("РРјСЏ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ: ");
 			scanf("%255s", name);
 			del(name);
+			break;
+		case 6:
+			printf("РРјСЏ  СЌР»РµРјРµРЅС‚Р°:");
+			scanf("%255s", name);
+			int new_prio;
+			printf("РќРѕРІС‹Р№ РїСЂРёРѕСЂРёС‚РµС‚:");
+			scanf("%d",&new_prio);
+			if (change_priority(name, new_prio));
+			printf("РїСЂРёРѕСЂРёС‚РµС‚ РёР·РјРµРЅС‘РЅ\n");
 			break;
 		case 0:
 			free_all();
 			return 0;
-		default: printf("Нет такого пункта\n");
+		default: printf("РќРµС‚ С‚Р°РєРѕРіРѕ РїСѓРЅРєС‚Р°\n");
 		}
 	}
 	free_all();
